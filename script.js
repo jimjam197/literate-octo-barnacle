@@ -13,15 +13,15 @@
             - use your browsers console throughout testing.
 */
 
-export const gameDetails = {   
-    title: 'Game Title',
+export const gameDetails = {
+    title: 'Zorkington Demo',
     desc: 'Welcome to the world of... here are some quick rules & concepts...',
-    author: 'Student Name',
-    cohort: 'SBPT-2022',
+    author: 'Jimmie Compton II',
+    cohort: 'PTSB-may-2023',
     startingRoomDescription: 'What you see before you is...',
     playerCommands: [
         // replace these with your games commands as needed
-        'inspect', 'view', 'look', 'pickup',
+        'inspect', 'view', 'look', 'pickup', 'move'
     ]
     // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference. 
     // This shouldn't be more than 6-8 different commands.
@@ -62,4 +62,4 @@ export const domDisplay = (playerInput) => {
     */
 
     // Your code here
-} 
+}
