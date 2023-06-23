@@ -66,8 +66,21 @@ export const domDisplay = (playerInput) => {
         displayString = gameDetails.startingRoomDescription;
     } else {
         if (playerInput === 'move') {
-            let movedToRoom = currentMovementState;
-            displayString = `You move to the ${movedToRoom}.`;
+            let availableRooms = movement[currentMovementState];
+            if (availableRooms && availableRooms.length > 0) {
+                displayString = `Available rooms to move: ${availableRooms.join(', ')}.`;
+            } else {
+                displayString = `There are no available rooms to move from ${currentMovementState}.`;
+            }
+        } else if (playerInput.startsWith('move ')) {
+            let destinationRoom = playerInput.substring(5);
+            let availableRooms = movement[currentMovementState];
+            if (availableRooms && availableRooms.includes(destinationRoom)) {
+                currentMovementState = destinationRoom;
+                displayString = `You move to the ${destinationRoom}.`;
+            } else {
+                displayString = `The ${destinationRoom} room cannot be accessed from here.`;
+            }
         } else if (playerInput === 'view') {
             let currentRoom = rooms[currentMovementState];
             displayString = `You are in the ${currentRoom.name}. ${currentRoom.description}.`;
@@ -75,7 +88,7 @@ export const domDisplay = (playerInput) => {
             if (currentRoom.items.length > 0) {
                 displayString += ` You notice the following items in the room: ${currentRoom.items.map(item => item.name).join(', ')}.`;
             } else {
-                displayString += ' There are no items of intrest in the room.';
+                displayString += ' There are no items of interest in the room.';
             }
         } else if (playerInput === 'pickup') {
             let currentRoom = rooms[currentMovementState];
@@ -110,16 +123,16 @@ class Room {
 }
 
 const rooms = {//room set up essentually 
-    outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", [], []
+    outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", []
     ),
     mudroom: new Room(
-        "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", [], []
+        "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", []
     ),
     mainroom: new Room(
-        "mainroom", "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.", [], []
+        "mainroom", "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.", []
     ),
     office: new Room(
-        "office", "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street.", [], []
+        "office", "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street.", []
     )
 }
 
@@ -128,9 +141,6 @@ class Item {
         this.name = name;
         this.description = description;
         this.location = location;
-        this.interact = function () {
-
-        }
     }
 }
 
