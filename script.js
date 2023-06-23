@@ -18,13 +18,11 @@ export const gameDetails = {
     desc: 'Welcome to the world of... here are some quick rules & concepts...',
     author: 'Jimmie Compton II',
     cohort: 'PTSB-may-2023',
-    startingRoomDescription: 'What you see before you is...',
+    startingRoomDescription: `What you see before you is...${rooms['outside'].description}`,
     playerCommands: [
         // replace these with your games commands as needed
         'inspect', 'view', 'look', 'pickup', 'move'
     ]
-    // Commands are basic things that a player can do throughout the game besides possibly moving to another room. This line will populate on the footer of your game for players to reference. 
-    // This shouldn't be more than 6-8 different commands.
 }
 
 // Your code here
@@ -62,7 +60,45 @@ export const domDisplay = (playerInput) => {
     */
 
     // Your code here
-}
+    let displayString = '';
+
+    if (!playerInput) {
+        displayString = gameDetails.startingRoomDescription;
+    } else {
+        if (playerInput === 'move') {
+            let movedToRoom = currentMovementState;
+            displayString = `You move to the ${movedToRoom}.`;
+        } else if (playerInput === 'view') {
+            let currentRoom = rooms[currentMovementState];
+            displayString = `You are in the ${currentRoom.name}. ${currentRoom.description}.`;
+
+            if (currentRoom.items.length > 0) {
+                displayString += ` You notice the following items in the room: ${currentRoom.items.map(item => item.name).join(', ')}.`;
+            } else {
+                displayString += ' There are no items of intrest in the room.';
+            }
+        } else if (playerInput === 'pickup') {
+            let currentRoom = rooms[currentMovementState];
+            let item = currentRoom.items[0];
+            if (item) {
+                if (item.location === currentMovementState) {
+                    currentRoom.items.splice(0, 1);
+                    currentRoom.inventory.push(item);
+                    displayString = `You picked up the ${item.name}.`;
+                } else {
+                    displayString = `You can't take the ${item.name} from this room.`;
+                }
+            } else {
+                displayString = 'There are no items worth picking up in this room.';
+            }
+        } else {
+            displayString = `I don't know how to ${playerInput}.`;
+        }
+    }
+
+    return displayString;
+};
+
 
 class Room {
     constructor(name, description, items, inventory = []) {//makes it so if there is nothing it can come up as nothing
@@ -73,15 +109,8 @@ class Room {
     }
 }
 
-const roomLookup = {//some room discriptions
-    outside: "Its a pleasant day in the area and you are still late to your meeting.",
-    mudroom: "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.",
-    mainroom: "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.",
-    office: "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street."
-}
-
 const rooms = {//room set up essentually 
-    outside: new Room("Sidewalk", "Its a pleasent day in the area and you are still late to your meeting.", [], []
+    outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", [], []
     ),
     mudroom: new Room(
         "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", [], []
@@ -95,10 +124,13 @@ const rooms = {//room set up essentually
 }
 
 class Item {
-    constructor(name, disc, location) {
+    constructor(name, description, location) {
         this.name = name;
-        this.disc = disc;
+        this.description = description;
         this.location = location;
+        this.interact = function () {
+
+        }
     }
 }
 
@@ -109,29 +141,11 @@ const items = {
 }
 
 let currentMovementState = 'outside';
-//Make a state machine where you can go from the sidewalk to any area
+//make the state matchine
 
 const movement = {
     office: ['mainroom'],
     mainroom: ['mudroom', 'office'],
     mudroom: ['outside', 'mainroom'],
     outside: ['mudroom']
-}
-
-function start() {
-    console.log(gameDetails.startingRoomDescription)
-    while (true) {
-        console.log(`you are currently at ${currentMovementState}`)
-        console.log(`${roomLookup[currentMovementState]}`)
-        let location = prompt(`Where do you want to go? `)
-        let possibleStates = Object.keys(rooms)
-
-        if (possibleStates.includes(location)) {
-            currentMovementState = location;
-            console.log(currentMovementState);
-        } else {
-            console.log('Invalid input')
-        }
-    }
-}
-start();
+};
