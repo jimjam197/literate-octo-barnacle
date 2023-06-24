@@ -98,64 +98,72 @@ export const domDisplay = (playerInput) => {
                     currentRoom.items.splice(0, 1);
                     currentRoom.inventory.push(item);
                     displayString = `You picked up the ${item.name}.`;
+                } else if (playerInput.startsWith('drop ')) {
+                    let itemName = playerInput.substring(5);
+                    let currentRoom = rooms[currentMovementState];
+                    let itemIndex = currentRoom.inventory.findIndex(item => item.name.toLowerCase() === itemName.toLowerCase());
+                    if (itemIndex !== -1) {
+                        let droppedItem = currentRoom.inventory.splice(itemIndex, 1)[0];
+                        currentRoom.items.push(droppedItem);
+                        displayString = `You dropped the ${droppedItem.name} in the ${currentRoom.name}.`;
+                    } else {
+                        displayString = `You can't take the ${item.name} from this room.`;
+                    }
                 } else {
-                    displayString = `You can't take the ${item.name} from this room.`;
+                    displayString = 'There are no items worth picking up in this room.';
                 }
             } else {
-                displayString = 'There are no items worth picking up in this room.';
+                displayString = `I don't know how to ${playerInput}.`;
             }
-        } else {
-            displayString = `I don't know how to ${playerInput}.`;
+        }
+
+        return displayString;
+    };
+
+
+    class Room {
+        constructor(name, description, items, inventory = []) {//makes it so if there is nothing it can come up as nothing
+            this.name = name;
+            this.description = description;
+            this.items = items
+            this.inventory = inventory;
         }
     }
 
-    return displayString;
-};
-
-
-class Room {
-    constructor(name, description, items, inventory = []) {//makes it so if there is nothing it can come up as nothing
-        this.name = name;
-        this.description = description;
-        this.items = items
-        this.inventory = inventory;
+    const rooms = {//room set up essentually 
+        outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", []
+        ),
+        mudroom: new Room(
+            "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", []
+        ),
+        mainroom: new Room(
+            "mainroom", "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.", []
+        ),
+        office: new Room(
+            "office", "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street.", []
+        )
     }
-}
 
-const rooms = {//room set up essentually 
-    outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", []
-    ),
-    mudroom: new Room(
-        "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", []
-    ),
-    mainroom: new Room(
-        "mainroom", "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.", []
-    ),
-    office: new Room(
-        "office", "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street.", []
-    )
-}
-
-class Item {
-    constructor(name, description, location) {
-        this.name = name;
-        this.description = description;
-        this.location = location;
+    class Item {
+        constructor(name, description, location) {
+            this.name = name;
+            this.description = description;
+            this.location = location;
+        }
     }
-}
 
-const items = {
-    keycard: new Item("Key card", "A key card with a picture of you on it from your first day as well as your name on it", "outside"),
-    notepad: new Item("Notepad", "A note pad that seems to have some doodles on it of assorted animals", "office"),
-    book: new Item("Book", "A well read book that someone must have dropped", "mudroom")
-}
+    const items = {
+        keycard: new Item("Key card", "A key card with a picture of you on it from your first day as well as your name on it", "outside"),
+        notepad: new Item("Notepad", "A note pad that seems to have some doodles on it of assorted animals", "office"),
+        book: new Item("Book", "A well read book that someone must have dropped", "mudroom")
+    }
 
-let currentMovementState = 'outside';
-//make the state matchine
+    let currentMovementState = 'outside';
+    //make the state matchine
 
-const movement = {
-    office: ['mainroom'],
-    mainroom: ['mudroom', 'office'],
-    mudroom: ['outside', 'mainroom'],
-    outside: ['mudroom']
-};
+    const movement = {
+        office: ['mainroom'],
+        mainroom: ['mudroom', 'office'],
+        mudroom: ['outside', 'mainroom'],
+        outside: ['mudroom']
+    };
