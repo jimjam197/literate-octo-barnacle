@@ -21,9 +21,9 @@ export const gameDetails = {
     startingRoomDescription: `What you see before you is...${rooms['outside'].description}`,
     playerCommands: [
         // replace these with your games commands as needed
-        'inspect', 'view', 'look', 'pickup', 'move'
+        'inspect', 'view', 'look', 'pickup', 'move','drop'
     ]
-}
+};
 
 // Your code here
 
@@ -119,51 +119,4 @@ export const domDisplay = (playerInput) => {
 
         return displayString;
     };
-
-
-    class Room {
-        constructor(name, description, items, inventory = []) {//makes it so if there is nothing it can come up as nothing
-            this.name = name;
-            this.description = description;
-            this.items = items
-            this.inventory = inventory;
-        }
-    }
-
-    const rooms = {//room set up essentually 
-        outside: new Room("outside", "Its a pleasent day in the area and you are still late to your meeting.", []
-        ),
-        mudroom: new Room(
-            "mudroom", "A small mud room with tiled floors, coat hooks, and a bench for taking off shoes.", []
-        ),
-        mainroom: new Room(
-            "mainroom", "A cozy main room with a plush sofa, a wooden coffee table, and soft lighting.", []
-        ),
-        office: new Room(
-            "office", "A tidy office room with a large wooden desk, a comfortable chair, and a window overlooking the street.", []
-        )
-    }
-
-    class Item {
-        constructor(name, description, location) {
-            this.name = name;
-            this.description = description;
-            this.location = location;
-        }
-    }
-
-    const items = {
-        keycard: new Item("Key card", "A key card with a picture of you on it from your first day as well as your name on it", "outside"),
-        notepad: new Item("Notepad", "A note pad that seems to have some doodles on it of assorted animals", "office"),
-        book: new Item("Book", "A well read book that someone must have dropped", "mudroom")
-    }
-
-    let currentMovementState = 'outside';
-    //make the state matchine
-
-    const movement = {
-        office: ['mainroom'],
-        mainroom: ['mudroom', 'office'],
-        mudroom: ['outside', 'mainroom'],
-        outside: ['mudroom']
-    };
+}
